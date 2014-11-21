@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    if (IsPost)
+    {
+        string number = Request.Form["phone"];
+        
+        if (number.Length == 10)
+        {
+            if(number.Substring(0, 2) != "+1")
+            {
+                number = "+1" + number;
+            }
+        }
+        if(number.Length == 12)
+        {
+            ViewBag.reg.AddInstance(5, number);
+        }
+    }
+}
+
+<h2>Currently Active clients</h2>
+@foreach (var x in ViewBag.current)
+{
+    <div style="color:gray">
+        @x<br>
+    </div>
+}
+
+<form method="post">
+    <fieldset>
+        <legend>Add User</legend>
+        <div>
+            <label for="phone">Phone Number:</label>
+            <input type="text" name="phone" value="" />
+        </div>
+        <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+        </div>
+    </fieldset>
+</form>

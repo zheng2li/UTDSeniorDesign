@@ -1,0 +1,39 @@
+﻿@{
+    Layout = "";
+    //ViewBag.Title = "ResponseCount";
+    int counter = 0;
+    int questionNumber = 0;
+    
+    
+    // get the session varible if it exists    
+    if (Session["counter"]!=null) 
+    { 
+        counter=(int)Session["counter"]; 
+    }
+    if (Session["questionNumber"] != null)
+    {
+        questionNumber = (int)Session["questionNumber"];
+    }
+
+    string name = Request["From"];
+    string message = ((SMSClient.Controllers.HomeController)this.ViewContext.Controller).SendQuestion(questionNumber);
+    
+    // increment it
+    counter++;
+    questionNumber++;
+  
+    // save it
+    Session["counter"] = counter;
+    Session["questionNumber"] = questionNumber;  
+ 
+    
+}
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<Response>
+    <Message>
+    <Body>
+        @name has messaged @Request["To"] @counter times with message @message
+    </Body>
+    </Message>
+</Response>

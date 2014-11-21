@@ -1,30 +1,49 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿
+@{
+    ViewBag.Title = "Index";
+    if (IsPost)
+    {
+        string number = Request.Form["phone"];
+        string user = Request.Form["user"];
+        
+        if (number.Length == 10)
+        {
+            if(number.Substring(0, 2) != "+1")
+            {
+                number = "+1" + number;
+            }
+        }
+        if(number.Length == 12)
+        {
+            int val = 5;
+            if(int.TryParse(user,out val))
+            {
+                ViewBag.reg[number] = new SMSClient.Models.SurveyInstance(val,number);
+            }
+        }
+    }
 }
 
-@model SMSClient.Models.Team3
-
-<div class="jumbotron">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3">
-                <h2>Test Page</h2>
-                @using (Html.BeginForm("SendButton", "Home", FormMethod.Post))
-                {
-                    @Html.TextAreaFor((t => t.Message), new { @class="form-control", @placeholder="Enter message"})
-                    @Html.TextBoxFor((m => m.Number), new { @class="form-control", @placeholder="Enter number"})
-                    @Html.PasswordFor((p => p.Pass), new { @class = "form-control", @placeholder = "Enter passcode" })
-                    <input type="submit" value="Send" class="btn btn-primary" />
-                }
-            </div>
-        </div>
+<h2>Currently Active clients</h2>
+@foreach (var x in ViewBag.current)
+{
+    <div style="color:gray">
+        @x<br>
     </div>
-    <span>Click <a href="@Url.Action("Index", "Home/Vivify")">here</a> to look at some parsed (?) API data.</span>
-    <!--
-    <p><a onclick="location.href='@Url.Action("SendButton","Home","Index")'" class="btn btn-primary btn-lg">This is Our Test Button</a></p>
-    -->
-</div>
+}
 
-<div class="row">
-
-</div>
+<form method="post">
+    <fieldset>
+        <legend>Add User</legend>
+        <div>
+            <label for="phone">Phone Number:</label>
+            <input type="text" name="phone" value="" />
+            <label for="user">User Number:</label>
+            <input type="text" name="user" value="5" />
+        </div>
+        <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+        </div>
+    </fieldset>
+</form>

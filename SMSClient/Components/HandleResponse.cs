@@ -5,7 +5,7 @@ using System.Web;
 using SMSClient.Integration;
 using SMSClient.Models;
 
-namespace SMSClient.Component
+namespace SMSClient.Components
 {
     public class HandleResponse // if the return is null, then input invalid
     {

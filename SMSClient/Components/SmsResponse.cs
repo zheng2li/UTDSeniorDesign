@@ -3,26 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using SMSClient.Models;
-using SMSClient.Component;
+using SMSClient.Components;
 
-namespace SMSClient.Component
+namespace SMSClient.Components
 {
     public class SmsResponse
     {
         const string YES = "yes";
         const int NOT_STARTED = -1;
+        const string EXIT_MSG = "Thank you for completing your survey.";
+        const string REJECT_MSG = "Ok. We will try again later. Send yes to continue";
+        const string RETRY_PREFIX = "Retry: ";
 
-        static public string HandleSmsResponse( ResponseModel response, ActiveRegistry data )
+        static public string HandleSmsResponse(ResponseModel response, Dictionary<string, SurveyInstance> data)
         {
             string retVal = null;
 
-            if ( response != null )
+            if ( response != null && response.From!=null)
             {
-                SurveyInstance patientSurvey = data.GetInstance(response.From);
+                SurveyInstance patientSurvey = data[response.From];
                 if (patientSurvey != null)
                 {
                     //
                     retVal = ProcessSmsText(patientSurvey, response);
+                    if (retVal.Equals(EXIT_MSG))
+                    {
+                        data.Remove(response.From);
+                    }
                 }
             }
             return retVal;
@@ -54,13 +61,13 @@ namespace SMSClient.Component
                 if ( string.Compare( response.ResponseText, YES, true ) == 0 )
                 {
                     patientSurvey.fetchSurvey();
-                    PatientSurveyQuestionModel nextQuestion = patientSurvey.GetQuestion(patientSurvey.CurrentQuestion);
+                    PatientSurveyQuestionModel nextQuestion = patientSurvey.GetCurrentQuestion();
 
                     retVal = SurveyInstance.getFormattedQuestionText(nextQuestion);
                 }
                 else
                 {
-                    retVal = "Ok. We will try again later.";
+                    retVal = REJECT_MSG;
                 }
             }
             return retVal;
@@ -74,7 +81,7 @@ namespace SMSClient.Component
             PatientResponseApiPostModel serverresponse = null;
             if (patientSurvey != null)
             {
-                PatientSurveyQuestionModel nextQuestion = patientSurvey.GetQuestion(patientSurvey.CurrentQuestion);
+                PatientSurveyQuestionModel nextQuestion = patientSurvey.GetCurrentQuestion();
                 if (nextQuestion != null)
                 {
                     try
@@ -127,53 +134,31 @@ namespace SMSClient.Component
                     success = serverresponse != null;
                     if(success || patientSurvey.CurrentlyOnOptionlessResponse())
                     {
-                        retVal += PlayNextQuestion(patientSurvey, response);
+                        patientSurvey.NextQuestion();
+                        retVal += PlayQuestion(patientSurvey, response);
                     }
                     else
                     {
-                        retVal += "Retry: "+ReplayLastQuestion(patientSurvey, response);
+                        retVal += RETRY_PREFIX + PlayQuestion(patientSurvey, response);
                     }
                 }
             }
             return retVal;
         }
 
-        static private string PlayNextQuestion(SurveyInstance patientSurvey, ResponseModel response)
+        static private string PlayQuestion(SurveyInstance patientSurvey, ResponseModel response)
         {
             string retVal = null;
             if (patientSurvey != null)
             {
-                patientSurvey.CurrentQuestion++;//eventually this will be replaced with actual data structure traversal!
-                PatientSurveyQuestionModel nextQuestion = patientSurvey.GetQuestion(patientSurvey.CurrentQuestion);
-                if (nextQuestion != null)
+                PatientSurveyQuestionModel question = patientSurvey.GetCurrentQuestion();
+                if (question != null)
                 {
-                    retVal = SurveyInstance.getFormattedQuestionText(nextQuestion);
-                    if (patientSurvey.CurrentlyOnOptionlessResponse())
-                    {
-                        retVal += "Send any response to continue.";
-                    }
+                    retVal = SurveyInstance.getFormattedQuestionText(question);
                 }
                 else
                 {
-                    retVal = "Thank you for completing your survey.";
-                }
-             }
-            return retVal;
-        }
-        static private string ReplayLastQuestion(SurveyInstance patientSurvey, ResponseModel response)
-        {
-            string retVal = null;
-            if (patientSurvey != null)
-            {
-                //patientSurvey.CurrentQuestion++; //don't change value if replay
-                PatientSurveyQuestionModel nextQuestion = patientSurvey.GetQuestion(patientSurvey.CurrentQuestion);
-                if (nextQuestion != null)
-                {
-                    retVal = SurveyInstance.getFormattedQuestionText(nextQuestion);
-                }
-                else
-                {
-                    retVal = "Thank you for completing your survey.";
+                    retVal = EXIT_MSG;
                 }
             }
             return retVal;

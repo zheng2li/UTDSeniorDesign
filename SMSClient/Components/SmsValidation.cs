@@ -5,7 +5,7 @@ using System.Web;
 
 using SMSClient.Models;
 
-namespace SMSClient.Component
+namespace SMSClient.Components
 {
     public class SmsValidation
     {
@@ -101,7 +101,7 @@ namespace SMSClient.Component
             bool valid = false;
             int isOptionNumber = 0;
             int chosenOption = 0;
-            int numberOfOptions = patientSurvey.GetQuestion(currentQuestion).PatientSurveyOptions.Count();
+            int numberOfOptions = patientSurvey.GetCurrentQuestion().PatientSurveyOptions.Count();
 
             if (singleResponse != string.Empty)
             {
@@ -127,7 +127,7 @@ namespace SMSClient.Component
             List<int> chosenOptions = new List<int>();
             char[] delimitors = { ' ', ',' };
             string[] parts = multipleResponse.Split(delimitors);
-            int numberOfOptions = patientSurvey.GetQuestion(currentQuestion).PatientSurveyOptions.Count();
+            int numberOfOptions = patientSurvey.GetCurrentQuestion().PatientSurveyOptions.Count();
 
             if (multipleResponse != string.Empty)
             {

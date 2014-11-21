@@ -173,25 +173,22 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="Component\HandleResponse.cs" />
-    <Compile Include="Component\PatientComponent.cs" />
-    <Compile Include="Component\SmsResponse.cs" />
-    <Compile Include="Component\SmsValidation.cs" />
-    <Compile Include="Component\WebHelpComponent.cs" />
+    <Compile Include="Components\HandleResponse.cs" />
+    <Compile Include="Components\PatientComponent.cs" />
+    <Compile Include="Components\SmsResponse.cs" />
+    <Compile Include="Components\SmsValidation.cs" />
+    <Compile Include="Components\WebHelpComponent.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\SurveyController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Integration\IvrClient.cs" />
     <Compile Include="Integration\IvrDTOs.cs" />
     <Compile Include="Integration\IvrService.cs" />
-    <Compile Include="Models\ActiveRegistry.cs" />
     <Compile Include="Models\PatientModel.cs" />
     <Compile Include="Models\PatientObservationModels.cs" />
     <Compile Include="Models\ResponseModel.cs" />
     <Compile Include="Models\SurveyInstance.cs" />
-    <Compile Include="Models\Team3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -228,20 +225,13 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Home\Success.cshtml" />
-    <Content Include="Views\Home\Error.cshtml" />
-    <Content Include="Views\Home\Vivify.cshtml" />
-    <Content Include="Views\Home\Received.cshtml" />
-    <Content Include="Views\Home\ResponseCount.cshtml" />
-    <Content Include="Views\Survey\Index.cshtml" />
-    <Content Include="Views\Survey\TwilioResponse.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\TwilioResponse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\PatientSurvey\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
